@@ -76,7 +76,7 @@ def receive_full_mesage(connection_socket, buff_size):
 
 # ===============================================
 
-def create_response_message(received_message):
+def create_response_message(received_message, username):
     body = f'<!DOCTYPE html> \
                 <html lang="es">\
                     <head>    \
@@ -89,6 +89,6 @@ def create_response_message(received_message):
                     </body>\
                 </html>'
 
-    head = f'HTTP/1.1 200 OK{salto}Server: nginx/1.17.0{salto}Date: {get_current_datetime()}{salto}Content-Type: text/html; charset=utf-8{salto}Content-Length: {len(body.encode())}{salto}Connection: keep-alive{salto}Access-Control-Allow-Origin: *{doble_salto}'
-    
-    return head +   body
+    head = f'HTTP/1.1 200 OK{salto}Server: nginx/1.17.0{salto}Date: {get_current_datetime()}{salto}Content-Type: text/html; charset=utf-8{salto}Content-Length: {len(body.encode())}{salto}Connection: keep-alive{salto}Access-Control-Allow-Origin: *{salto}X-ElQuePregunta: {username}{doble_salto}'
+
+    return head + body
