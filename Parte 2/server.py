@@ -9,7 +9,7 @@ def server_func(nombre_JSON="config", ubicacion_JSON="Parte1"):
     buff_size = 50
     address = ('localhost', 8000)
     username = "Undefined"
-    client_error_message = "Esta página no existe para ti jaja sl2"
+    client_error_message = "No puedes ver esto! jaja sl2"
 
     # ============================
 
@@ -60,6 +60,8 @@ def server_func(nombre_JSON="config", ubicacion_JSON="Parte1"):
                 socket.AF_INET, socket.SOCK_STREAM)
             socket_servidor_destino.connect((host, 80))
 
+            # debemos reenviar el mensaje con nuestro header agregado
+            recv_message = add_custom_header(recv_message, username)
             print("reenviando request al servidor...")
             socket_servidor_destino.send(recv_message.encode())
 

@@ -76,10 +76,9 @@ def receive_full_mesage(connection_socket, buff_size):
     headers = head.split(salto)
     total_body_length = 0
     index_c_length = find_index_with_substring("Content-Length:", headers)
-    
+
     if index_c_length != -1:
         total_body_length = int((headers[index_c_length]).split()[1])
-
 
     is_all_body = body_length == total_body_length
 
@@ -134,9 +133,10 @@ def create_response_message(received_message, username):
     del headers[find_index_with_substring("Content-Length:", headers)]
 
     content_lenght = f"Content-Length:{new_content_lenght}"
-    custom_header = f"X-ElQuePregunta: {username}"
+    # custom_header = f"X-ElQuePregunta: {username}"
     head = salto.join(headers)
-    head += salto + content_lenght + salto + custom_header
+    head += salto + content_lenght
+    # + salto + custom_header
 
     return head + doble_salto+body
 
@@ -186,21 +186,6 @@ assert is_forbidden("www.dcc.uchile.cl/")
 assert not is_forbidden("www.example.com/")
 
 # ===============================================
-error = """ HTTP/1.1 403 Forbidden
-Date: Thu, 08 Sep 2023 15:45:00 GMT
-Content-Type: text/html
-Content-Length: 93
-
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Error 403 - Forbidden</title>
-</head>
-<body>
-    <h1>403 - Forbidden</h1>
-    <p>Access to the requested resource is forbidden on this server.</p>
-</body>
-</html> """
 
 
 def create_HTTP_error(custom_message="Access to the requested resource is forbidden on this server."):
@@ -228,3 +213,11 @@ def create_HTTP_error(custom_message="Access to the requested resource is forbid
     return create_HTTP_message(create_JSON_HTTP(start_line, headers, body))
 
 # print(create_HTTP_error())
+
+# ===============================================
+
+
+def add_custom_header(message, username):
+    head, body = message.split(doble_salto)
+    head += salto+f"X-ElQuePregunta: {username}"
+    return head+doble_salto+body
