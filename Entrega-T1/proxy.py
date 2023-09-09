@@ -2,7 +2,7 @@ import socket
 from utils import *
 
 
-def server_func(nombre_JSON="config", ubicacion_JSON="Parte1"):
+def proxy_func(nombre_JSON="config", ubicacion_JSON="Parte1"):
 
     # variables globales ==================
 
@@ -88,4 +88,4 @@ def server_func(nombre_JSON="config", ubicacion_JSON="Parte1"):
         # seguimos esperando por si llegan otras conexiones
 
 
-server_func()
+proxy_func()
