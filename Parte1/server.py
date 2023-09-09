@@ -2,7 +2,7 @@ import socket
 from utils import *
 
 
-def server_func(nombre_JSON="config", ubicacion_JSON="Parte1"):
+def server_func(nombre_JSON="config"):
 
     # variables globales ==================
 
@@ -13,7 +13,7 @@ def server_func(nombre_JSON="config", ubicacion_JSON="Parte1"):
     # ============================
 
     # abrimos el archivo de configuracion
-    with open(f"{ubicacion_JSON}/{nombre_JSON}.json") as file:
+    with open(f"Entrega-T1/json/{nombre_JSON}.json") as file:
         data = json.load(file)
         # cargamos el nombre de usuario
         if "username" in data["parameters"][0]:

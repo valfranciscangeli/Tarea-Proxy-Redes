@@ -164,7 +164,7 @@ assert get_full_adress(http_message) == "www.ejemplo.com/pagina-ejemplo"
 """ Esta funcion revisa si la direccion pedida esta prohibida segun el archivo de restrictions.json """
 
 def is_forbidden(hostname: str, file_name: str = "restrictions", protocol: str = "http://") -> bool:
-    with open(f"/{file_name}.json") as file:
+    with open(f"Entrega-T1/json/{file_name}.json") as file:
         data = json.load(file)
 
     blocked = data["blocked"]

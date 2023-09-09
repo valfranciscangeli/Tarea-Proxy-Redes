@@ -2,11 +2,9 @@ import socket
 from utils import *
 
 
-def proxy_func(nombre_JSON="config", puerto=8000):
+def proxy_func(nombre_JSON="config", puerto=8000, buff_size = 1024):
 
     # variables globales ==================
-
-    buff_size = 50
     address = ('localhost', puerto)
     username = get_username(nombre_JSON)
     client_error_message = "No puedes ver esto! jaja sl2"
@@ -80,4 +78,4 @@ def proxy_func(nombre_JSON="config", puerto=8000):
         # seguimos esperando por si llegan otras conexiones
 
 
-proxy_func()
+proxy_func() # iniciar proxy

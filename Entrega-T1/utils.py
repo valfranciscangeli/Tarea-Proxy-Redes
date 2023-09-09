@@ -110,7 +110,7 @@ def create_response_message(received_message, username):
 
     head, body = received_message.split(doble_salto)
 
-    with open("restrictions.json") as file:
+    with open("json/restrictions.json") as file:
         data = json.load(file)
     forbidden_words = data["forbidden_words"]
 
@@ -179,7 +179,7 @@ assert get_full_adress(http_message) == "www.ejemplo.com/pagina-ejemplo"
 
 
 def is_forbidden(hostname: str, file_name: str = "restrictions", protocol: str = "http://") -> bool:
-    with open(f"{file_name}.json") as file:
+    with open(f"json/{file_name}.json") as file:
         data = json.load(file)
 
     blocked = data["blocked"]
@@ -253,7 +253,7 @@ def process_request(message, username):
 
 def get_username(json_file):
     # abrimos el archivo de configuracion
-    with open(f"{json_file}.json") as file:
+    with open(f"json/{json_file}.json") as file:
         data = json.load(file)
         # cargamos el nombre de usuario
         if "username" in data["parameters"][0]:
