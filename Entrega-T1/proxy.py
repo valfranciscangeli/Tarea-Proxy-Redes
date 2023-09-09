@@ -19,7 +19,7 @@ def proxy_func(nombre_JSON="config", puerto=8000, buff_size = 1024):
     # le indicamos al server socket que debe atender peticiones en la dirección address
     server_socket.bind(address)
 
-    server_socket.listen(3)
+    server_socket.listen(3)                                                                         
 
     # nos quedamos esperando a que llegue una petición de conexión
     print('... Esperando clientes')
@@ -35,7 +35,7 @@ def proxy_func(nombre_JSON="config", puerto=8000, buff_size = 1024):
         host = get_server_host(recv_message)
         print(f"cliente pide conectar con: {host}")
 
-        address_forbidden = is_forbidden(get_full_adress(recv_message))
+        address_forbidden = is_forbidden(get_full_adress(recv_message))                                         
 
         if address_forbidden:
             final_response_message = create_HTTP_error(client_error_message)
@@ -45,9 +45,8 @@ def proxy_func(nombre_JSON="config", puerto=8000, buff_size = 1024):
             # ahora, debemos conectarnos con el servidor antes de responder, pasamos a ser un cliente
             # socket orientado a conexión cliente =======================================
             print("conectando con servidor ...")
-            socket_servidor_destino = socket.socket(
-                socket.AF_INET, socket.SOCK_STREAM)
-            socket_servidor_destino.connect((host, 80))
+            socket_servidor_destino = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            socket_servidor_destino.connect((host, 80)) # http puerto 80 default
 
             # debemos reenviar el mensaje con nuestro header agregado
             recv_message = process_request(recv_message, username)
@@ -59,6 +58,9 @@ def proxy_func(nombre_JSON="config", puerto=8000, buff_size = 1024):
             server_response = receive_full_mesage(
                 socket_servidor_destino, buff_size)
             print(f"se recibió: \n {server_response}")
+            
+            # cerramos la conexion
+            socket_servidor_destino.close()
 
             # creamos la respuesta
             final_response_message = create_response_message(
@@ -79,3 +81,4 @@ def proxy_func(nombre_JSON="config", puerto=8000, buff_size = 1024):
 
 
 proxy_func() # iniciar proxy
+
