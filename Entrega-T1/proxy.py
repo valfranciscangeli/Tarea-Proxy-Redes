@@ -80,5 +80,5 @@ def proxy_func(nombre_JSON="config", puerto=8000, buff_size = 1024):
         # seguimos esperando por si llegan otras conexiones
 
 
-proxy_func() # iniciar proxy
+proxy_func(buff_size=20) # iniciar proxy
 
