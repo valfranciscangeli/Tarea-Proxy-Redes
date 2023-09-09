@@ -46,7 +46,7 @@ def parse_HTTP_message(http_message):
 # ====================================================
 
 
-def create_HTTP_message(json_message):
+def create_HTTP_message(json_message) -> str:
     json_message = json.loads(json_message)
     start_line, head = json_message["head"]
     body = json_message["body"][0]["content"]
