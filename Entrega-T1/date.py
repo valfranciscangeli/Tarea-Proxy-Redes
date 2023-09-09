@@ -1,7 +1,9 @@
 import datetime
 
+""" Funcion que entrega la fecha y hora actual en formato GMT """
 
-def get_current_datetime():
+
+def get_current_datetime() -> str:
 
     # fecha actual en GMT
     current_datetime = datetime.datetime.utcnow()

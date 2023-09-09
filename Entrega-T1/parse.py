@@ -9,6 +9,8 @@ doble_salto = "\r\n\r\n"
 separador_headers = ": "
 # ====================================================
 
+""" Crea una estructura json a partir de una start line http, diccionario de headers y un body (frecuentemente html) """
+
 
 def create_JSON_HTTP(start_line: str, headers: dict, body: str):
     data = {
@@ -25,6 +27,9 @@ def create_JSON_HTTP(start_line: str, headers: dict, body: str):
 
     return json.dumps(data)
 # ====================================================
+
+
+""" Transforma un mensaje http a una estructura json """
 
 
 def parse_HTTP_message(http_message):
@@ -44,6 +49,8 @@ def parse_HTTP_message(http_message):
 
 
 # ====================================================
+
+""" Crea un mensaje http a partir de una estructura json """
 
 
 def create_HTTP_message(json_message) -> str:

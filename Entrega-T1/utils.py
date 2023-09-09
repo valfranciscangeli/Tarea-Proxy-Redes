@@ -20,7 +20,9 @@ separador_headers = ": "
 - Se asume que el largo del body es 0 si el header no se encuentra.
 - Se continua pidiendo partes del mensaje hasta completar el tamaño del body.
 """
-def receive_full_mesage(connection_socket, buff_size:int) -> str:
+
+
+def receive_full_mesage(connection_socket, buff_size: int) -> str:
     print("estamos recibiendo el mensaje ...")
     # recibimos la primera parte del mensaje
     recv_message = connection_socket.recv(buff_size)
@@ -103,6 +105,7 @@ def receive_full_mesage(connection_socket, buff_size:int) -> str:
 # ===============================================
 """ Esta funcion revisa el mensaje de response reemplazando las palabras prohibidas en el body segun el archivo restrictions.json """
 
+
 def create_response_message(received_message, username):
 
     head, body = received_message.split(doble_salto)
@@ -118,19 +121,28 @@ def create_response_message(received_message, username):
 
     new_content_lenght = len(body.encode())  # nuevo largo del body
     headers = head.split(salto)
-    del headers[find_index_with_substring(
-        "Content-Length:", headers)]  # eliminamos el header
 
-   
-    content_lenght = f"Content-Length:{new_content_lenght}"  # reemplazamos el header
+    connection_index = find_index_with_substring(
+        "Connection: keep-alive", headers)
+    keep_a_index = find_index_with_substring("Content-Length:", headers)
 
-    head = salto.join(headers) # recomponemos el HEAD
+    if connection_index != -1:
+        del headers[connection_index]  # eliminamos el header Connection
+    if keep_a_index != -1:
+        del headers[keep_a_index]  # eliminamos el header Content-Length
+
+    # reemplazamos el header
+    content_lenght = f"Content-Length:{new_content_lenght}"
+
+    head = salto.join(headers)  # recomponemos el HEAD
     head += salto + content_lenght
 
     return head + doble_salto + body
 
+
 # ===============================================
 "Esta función devuelve el contenido del header 'Host' de un mensaje http"
+
 
 def get_server_host(message: str) -> str:
     host = None
@@ -142,9 +154,11 @@ def get_server_host(message: str) -> str:
 
     return host
 
+
 # ===============================================
 """ Esta funcion entrega la direccion pedida completa
 revisando el header 'Host' y la startline """
+
 
 def get_full_adress(message: str) -> str:
     host = get_server_host(message)
@@ -163,8 +177,9 @@ assert get_full_adress(http_message) == "www.ejemplo.com/pagina-ejemplo"
 # ===============================================
 """ Esta funcion revisa si la direccion pedida esta prohibida segun el archivo de restrictions.json """
 
+
 def is_forbidden(hostname: str, file_name: str = "restrictions", protocol: str = "http://") -> bool:
-    with open(f"/{file_name}.json") as file:
+    with open(f"{file_name}.json") as file:
         data = json.load(file)
 
     blocked = data["blocked"]
@@ -177,6 +192,7 @@ assert not is_forbidden("www.example.com/")
 
 # ===============================================
 """ Esta funcion compone el mensaje de error de pagina prohibida """
+
 
 def create_HTTP_error(custom_message="Access to the requested resource is forbidden on this server."):
 
@@ -193,7 +209,7 @@ def create_HTTP_error(custom_message="Access to the requested resource is forbid
             </body> \
             </html>" \
 
-    length = len(body.encode()) # largo del body
+    length = len(body.encode())  # largo del body
     headers = {
         "Date": get_current_datetime(),
         "Content-Type": "text/html",
@@ -202,10 +218,44 @@ def create_HTTP_error(custom_message="Access to the requested resource is forbid
 
     return create_HTTP_message(create_JSON_HTTP(start_line, headers, body))
 
+
 # ===============================================
 """ Esta funcion compone el header X-ElQuePregunta con el username en config.json"""
 
-def add_custom_header(message: str, username:str)->str:
+
+def add_custom_header(message: str, username: str) -> str:
     head, body = message.split(doble_salto)
     head += salto+f"X-ElQuePregunta: {username}"
     return head+doble_salto+body
+
+# ===============================================
+
+
+def process_request(message, username):
+    message = add_custom_header(message, username)
+    head, body = message.split(doble_salto)
+    headers = head.split(salto)
+
+    connection_index = find_index_with_substring(
+        "Connection: keep-alive", headers)
+    if connection_index != -1:
+        del headers[connection_index]  # eliminamos el header Connection
+
+    head = salto.join(headers)  # recomponemos el HEAD
+
+    return head + doble_salto + body
+
+# ===============================================
+
+
+""" Devuelve el username contenido en el archivo de configuracion """
+
+
+def get_username(json_file):
+    # abrimos el archivo de configuracion
+    with open(f"{json_file}.json") as file:
+        data = json.load(file)
+        # cargamos el nombre de usuario
+        if "username" in data["parameters"][0]:
+            return data["parameters"][0]["username"]
+    return "Undefined"

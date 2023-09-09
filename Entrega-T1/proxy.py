@@ -2,23 +2,14 @@ import socket
 from utils import *
 
 
-def proxy_func(nombre_JSON="config", ubicacion_JSON="Parte1"):
+def proxy_func(nombre_JSON="config", puerto=8000):
 
     # variables globales ==================
 
     buff_size = 50
-    address = ('localhost', 8000)
-    username = "Undefined"
+    address = ('localhost', puerto)
+    username = get_username(nombre_JSON)
     client_error_message = "No puedes ver esto! jaja sl2"
-
-    # ============================
-
-    # abrimos el archivo de configuracion
-    with open(f"{ubicacion_JSON}/{nombre_JSON}.json") as file:
-        data = json.load(file)
-        # cargamos el nombre de usuario
-        if "username" in data["parameters"][0]:
-            username = data["parameters"][0]["username"]
 
     # ============================
 
@@ -40,7 +31,7 @@ def proxy_func(nombre_JSON="config", ubicacion_JSON="Parte1"):
         new_socket, new_socket_address = server_socket.accept()
 
         # luego recibimos el mensaje usando la función que programamos
-        # esta función entrega el mensaje en string (no en bytes) y sin el end_of_message
+        # esta función entrega el mensaje en string (no en bytes)
         print("entrando a recibir mensaje ...")
         recv_message = receive_full_mesage(new_socket, buff_size)
         host = get_server_host(recv_message)
@@ -61,7 +52,8 @@ def proxy_func(nombre_JSON="config", ubicacion_JSON="Parte1"):
             socket_servidor_destino.connect((host, 80))
 
             # debemos reenviar el mensaje con nuestro header agregado
-            recv_message = add_custom_header(recv_message, username)
+            recv_message = process_request(recv_message, username)
+            print(f"request recibida procesada: \n {recv_message}")
             print("reenviando request al servidor...")
             socket_servidor_destino.send(recv_message.encode())
 
